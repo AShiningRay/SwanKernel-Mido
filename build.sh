@@ -15,6 +15,7 @@ GCC_AARCH64=$HOME/toolchains/gcc64/bin/aarch64-linux-android-
 GCC_ARM32=$HOME/toolchains/gcc32/bin/arm-linux-androideabi-
 CLANG_CC=$HOME/toolchains/clang_kernel4.9/bin/clang
 SHOW_PATHS(){
+	clear
 	echo "Printing all compiler paths and the kernel's name:"
 	echo "DTC_EXT(optional): $DTC"
 	echo "CLANG_TRIPLE: $CLANG_TRIPLE_COMP"
@@ -63,7 +64,7 @@ CLEAN_BUILD(){
 }
 BUILD_KERNEL(){
 	echo -e $COLOR_C"\n\nBeginning compilation for mido...\n\n" $COLOR_N
-	make O=KernelOut/ ARCH=arm64 mido_defconfig
+	make O=KernelOut/ ARCH=arm64 swankernel_mido_defconfig
 	if ! make -j$(nproc --all) O=KernelOut/ \
 	KBUILD_BUILD_VERSION=$KERNEL_NAME \
 	ARCH=arm64 DTC_EXT=$DTC \
