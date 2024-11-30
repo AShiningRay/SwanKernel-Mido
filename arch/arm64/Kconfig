@@ -1405,6 +1405,28 @@ config ARCH_HIBERNATION_HEADER
 config ARCH_SUSPEND_POSSIBLE
 	def_bool y
 
+config SWANKERNEL_UNDERVOLT_EXTREME
+	bool "Enable extreme undervolts for mido"
+	default n
+	help
+		Select this option to enable tighter undervolts for
+		xiaomi's mido platform. The voltages used by selecting this
+		config will provide higher power efficiency compared to
+		UNDERVOLT_SAFE, but at the cost of possible crashes if your
+		device doesn't undervolt particularly well. Selecting neither
+		of the undervolt options makes the  kernel get the default
+		voltage tables from qcom.
+
+config SWANKERNEL_UNDERVOLT_SAFE
+	bool "Enable safe undervolts for mido"
+	default n
+	help
+		Select this option to enable safe undervolts for
+		the xiaomi mido platform. While not as power efficient
+		as the UNSAFE undervolts, the voltage tables this option
+		selects should be safe enough to guarantee that the kernel
+		will work well on any mido devices.
+
 endmenu
 
 menu "CPU Power Management"

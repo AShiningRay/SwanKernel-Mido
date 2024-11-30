@@ -451,6 +451,24 @@
 					<1 2 4 9>;
 
 				qcom,cpr-voltage-ceiling =
+#ifdef CONFIG_SWANKERNEL_UNDERVOLT_EXTREME
+					/* Speed bin 0 */
+					<550000  610000 640000 685000 705000
+					 730000  750000 775000 800000>,
+
+					/* Speed bin 2 */
+					<550000  610000 640000 685000 705000
+					 730000  750000 775000 800000>,
+
+#elif CONFIG_SWANKERNEL_UNDERVOLT_SAFE
+					/* Speed bin 0 */
+					<590000  650000 680000 710000 745000
+					 770000  795000 825000 850000>,
+
+					/* Speed bin 2 */
+					<590000  650000 680000 710000 745000
+					 770000  795000 825000 850000>,
+#else
 					/* Speed bin 0 */
 					<715000  790000 860000 865000 920000
 					 990000 1065000 1065000 1065000>,
@@ -458,7 +476,7 @@
 					/* Speed bin 2 */
 					<715000  790000 860000 865000 920000
 					 990000 1065000 1065000 1065000>,
-
+#endif
 					/* Speed bin 6 */
 					<715000  790000 860000 865000 920000
 					 990000 1065000>,
@@ -841,7 +859,14 @@
 		regulator-min-microvolt = <1>;
 		regulator-max-microvolt = <7>;
 
+#ifdef CONFIG_SWANKERNEL_UNDERVOLT_EXTREME
+		qcom,ldo-voltage-ceiling = <550000 600000 660000>;
+#elif CONFIG_SWANKERNEL_UNDERVOLT_SAFE
+		qcom,ldo-voltage-ceiling = <590000 640000 700000>;
+#else
 		qcom,ldo-voltage-ceiling = <620000 680000 750000>;
+#endif
+
 		qcom,ldo-voltage-floor =   <510000 510000 600000>;
 
 		qcom,num-corners = <7>;
