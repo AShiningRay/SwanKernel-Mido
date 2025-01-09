@@ -10,18 +10,15 @@ COLOR_LP="\033[1;35m"
 # This is where the paths for your compiler layout go, as well as the kernel's name.
 KERNEL_NAME="SwanKernel"
 #DTC=/var/lib/snapd/snap/bin/dtc
-CLANG_TRIPLE_COMP=$HOME/toolchains/clang_kernel4.9/bin/aarch64-linux-gnu-
-GCC_AARCH64=$HOME/toolchains/gcc64/bin/aarch64-linux-android-
-GCC_ARM32=$HOME/toolchains/gcc32/bin/arm-linux-androideabi-
-CLANG_CC=$HOME/toolchains/clang_kernel4.9/bin/clang
+CLANG=$HOME/toolchains/clang/bin/
+GCC32=$HOME/toolchains/gcc32/bin/
+GCC64=$HOME/toolchains/gcc64/bin/
 SHOW_PATHS(){
 	clear
 	echo "Printing all compiler paths and the kernel's name:"
-	echo "DTC_EXT(optional): $DTC"
-	echo "CLANG_TRIPLE: $CLANG_TRIPLE_COMP"
-	echo "GCC_CC_AARCH64: $GCC_AARCH64"
-	echo "GCC_CC_ARM32: $GCC_ARM32"
-	echo "CLANG_CC: $CLANG_CC"
+	echo "GCC_CC_AARCH64: $GCC64"
+	echo "GCC_CC_ARM32: $GCC32"
+	echo "CLANG_CC: $CLANG"
 	echo "KERNEL_NAME: $KERNEL_NAME"
 	while true; do
 		echo -e $COLOR_Y
@@ -63,15 +60,13 @@ CLEAN_BUILD(){
 	BUILD_KERNEL
 }
 BUILD_KERNEL(){
+	export PATH="$CLANG:$GCC64:$GCC32:$PATH"
 	echo -e $COLOR_C"\n\nBeginning compilation for mido...\n\n" $COLOR_N
 	make O=KernelOut/ ARCH=arm64 swankernel_mido_defconfig
-	if ! make -j$(nproc --all) O=KernelOut/ \
-	KBUILD_BUILD_VERSION=$KERNEL_NAME \
-	ARCH=arm64 DTC_EXT=$DTC \
-	CLANG_TRIPLE=$CLANG_TRIPLE_COMP \
-	CROSS_COMPILE=$GCC_AARCH64 \
-	CROSS_COMPILE_ARM32=$GCC_ARM32 \
-	CC=$CLANG_CC ; then
+	if ! make -j$(nproc --all) LLVM_IAS=1 LLVM=-14 \
+        CC=clang CLANG_TRIPLE=aarch64-linux-gnu- \
+        CROSS_COMPILE=aarch64-linux-android- CROSS_COMPILE_ARM32=arm-linux-androideabi- \
+        O=KernelOut/ ARCH=arm64 ; then
 		echo -e $COLOR_R"\nThe kernel couldn't be compiled... check for errors above.\n"$COLOR_N
 		exit 1
 	fi
